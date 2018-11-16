@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="Validacion de Formularios">
+		<meta name="author" content="Robert Perez">
+		<title>Html5 Validacion</title>
+		<!-- Bootstrap core CSS -->
+		<link href="css/bootstrap.css" rel="stylesheet">
+		<!-- Font Awesome Icons -->
+		<link href="css/font-awesome.min.css" rel="stylesheet">
+		<!-- Colors CSS -->
+		<link href="css/colors.css" rel="stylesheet">
+		<!-- Animaciones -->
+		<link href="css/animate.min.css" rel="stylesheet">
+		<!-- prettify -->
+		<link href="js/prettify/prettify.css" rel="stylesheet">
+		<link href="css/stylus.css" rel="stylesheet">
+		<script>
+			function success(e,m){
+				$("#msjdata").html(m);
+				$("#eventdata .modal-header").addClass('bg-blue').removeClass('bg-red bg-green');
+				$("#eventdata").modal('show');
+			}
+			function error(e,m){
+				$("#msjdata").html(m);
+				$("#eventdata .modal-header").addClass('bg-red').removeClass('bg-blue bg-green');
+				$("#eventdata").modal('show');
+			}
+			function xhrsucces(e){
+				$("#resulst").html(e);
+			}
+			function xhrerror(e,m){
+				$("#resulst").html(m);
+			}
+		</script>
+	</head>
+	<body data-spy="scroll" data-target="#list-docs" data-offset=10>
+		<div class="container-fluid">
+			<div class="row flex-xl-nowrap">
+				<div class="col-12 col-md-2 col-xl-2 bd-sidebar">
+					<nav class="collapse bd-links list-groups" id="list-docs" role="tablist">
+						<div class="bd-toc-item active">
+							<a class="bd-toc-link list-group-item" href="#">Html5Valid</a>
+						</div>
+						<div class="bd-toc-item">
+							<a class="bd-toc-link list-group-item" href="#basic">Basico</a>
+						</div>
+						<div class="bd-toc-item">
+							<a class="bd-toc-link list-group-item" href="#dataset">DataSet y Javascript</a>
+						</div>
+						<div class="bd-toc-item">
+							<a class="bd-toc-link list-group-item" href="#ajax">Ajax</a>
+						</div>
+						<div class="bd-toc-item">
+							<a class="bd-toc-link list-group-item" href="#formval">FormValue</a>
+						</div>
+					</nav>
+				</div>
+				<main data-offset="0" class="col-12 col-md-10 col-xl-10 py-md-3 pl-md-5 bd-content" role="main">
+					<header class="bg-blue fg-white pt-2">
+						<h1 class="text-shadow display-2 text-center mt-4 animated rotateIn delay-2s">Html5 Validaci&oacute;n</h1>
+						<p class="prin lead text-center animated bounceInRight">Validador y manejador de formularios usuando las api de javascript y html5</p>
+					</header>
+					<br/>
+					<p>Solo debe ingresar la siguiente linea a su proyecto y listo, facil rapido y compatible con otros frameword</p>
+					<div class="example code" data-text="Codigo">
+						<pre class="prettyprint linenums lang-css" id="script"></pre>
+					</div>
+					<div id="basic" class="mt-6 section">
+						<h3>Basico</h3>
+						<div class="example code" data-text="basico">
+							<fieldset>
+								<legend>Validaci&oacute;n de Formulario con campos Html5</legend>
+								<form id="fmbasic" data-role="validate" data-allrequired="true">
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text">A</div>
+										</div>
+										<input type="text" class="form-control" placeholder="Texto"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-lock"></i></div>
+										</div>
+										<input type="password" class="form-control" placeholder="Clave"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text">&#64;</div>
+										</div>
+										<input type="email" class="form-control" placeholder="Correo"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+										</div>
+										<input type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+										</div>
+										<input type="time" class="form-control" placeholder="hh:mm:ss"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-calculator"></i></div>
+										</div>
+										<input type="number" step="1" min="0" max="99" class="form-control" placeholder="numerico"/>
+									</div>
+									<button type="submint" class="btn btn-primary w-100"><i class=""></i> Validar</button>
+									<output role="alert"></output>
+								</form>
+							</fieldset>
+						</div>
+						<div class="example code" data-text="Codigo">
+							<pre class="prettyprint linenums lang-css" id="form-basic"></pre>
+						</div>
+						<p>
+							Como podemos observar no existe codigo javascript, solo debemos agregar el atributo <mark class="label attr">data-role="validate"</mark>
+							y el atributo <mark class="label attr">data-allrequired="true"</mark>, y con estos el formulario sera validado y el ultimo atributo
+							indicara al sistema que todos lo campos son obligatorios en caso de que no deseemos que todos los campos sean obligatorios podemos usar
+							el atributo <mark class="label attr">data-required</mark> sobre los elementos que deseamos que sean obligatorios.
+						</p>
+					</div>
+					<hr class="bd-orange hrxl"/>
+					<div id="dataset" class="section">
+						<h3>DataSet y Javascript</h3>
+						<p>
+							<mark class="label script">html5valid</mark> posee un grupo de opciones que se pueden usar por medio de los atributo <mark class="label attr">data</mark>
+							o atravez de opciones de javascript.
+						</p>
+						<div class="table-responcive">
+							<table class="table table-striped table-hover">
+							<caption>Opciones</caption>
+							<thead>
+								<tr>
+									<th>Metodo</th>
+									<th>tipo</th>
+									<th>DataSet</th>
+									<th>Descripci&oacute;n</th>
+									<th>Uso y Defecto</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>onError</td>
+									<td>funci&oacute;n</td>
+									<td>data-on-error</td>
+									<td>
+										funci&oacute;n a ejecutar cuando el formulario sea invalido
+									</td>
+									<td>
+										function(elemento){console.log("formulario invalido",this,elemento)}
+									</td>
+								</tr>
+								<tr>
+									<td>onSuccess</td>
+									<td>funci&oacute;n</td>
+									<td>data-on-success</td>
+									<td>
+										funci&oacute;n a ejecutar cuando el formulario sea valido
+									</td>
+									<td>
+										function(valores){console.log("php dice",valores)}
+									</td>
+								</tr>
+								<tr>
+									<td>classForm</td>
+									<td>string</td>
+									<td>data-class-form</td>
+									<td>
+										nombre de la clase a agregar al formulario, en bootstrap suele ser <mark class="label css">was-validated</mark>
+									</td>
+									<td>
+										was-validated
+									</td>
+								</tr>
+								<tr>
+									<td>classMsjError</td>
+									<td>string</td>
+									<td>data-class-msj-error</td>
+									<td>
+										nombre de la clase a agregar al elemento que mostrara el mensaje de error, puede ser <mark class="label script font-weight-bold">false</mark>
+										y utilizar la funci&oacute;n onError para personalizar el mensaje
+									</td>
+									<td>
+										invalid-feedback
+									</td>
+								</tr>
+								<tr>
+									<td>novalidate</td>
+									<td>boolean</td>
+									<td>data-novalidate</td>
+									<td>
+										obligatorio para que el formulario no utilize los aspectos del navegador por defecto.
+									</td>
+									<td>
+										true
+									</td>
+								</tr>
+								<tr>
+									<td>allrequired</td>
+									<td>boolean</td>
+									<td>data-allrequired</td>
+									<td>
+										permite establecer que todos los elementos del formulario seran obligatorios.
+									</td>
+									<td>
+										false
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>boolean</td>
+									<td>data-required</td>
+									<td>
+										solo se usa atravez del atributo <mark class="label attr">data</mark> en el elemento que se required
+										obligatorio 
+									</td>
+									<td>
+										&lt;input type="text" data-required="true"&gt;
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>string</td>
+									<td>type-valid</td>
+									<td>
+										solo se usa atravez del atributo <mark class="label attr">data</mark> en el elemento para
+										validar un atributo especifico. Adem&aacute;s puedes especificar multiples atributos separados
+										por comas.
+									</td>
+									<td>
+										&lt;input type="number" min="18" max="99" step="1" data-type-valid="min,max"&gt;
+									</td>
+								</tr>
+								<tr>
+									<td>rule</td>
+									<td>objeto</td>
+									<td>data-rule</td>
+									<td>
+										mensaje personalizados para los elementos del formulario seg&uacute;n su tipo.
+									</td>
+									<td>
+										&lt;input type="color" data-required="true"&gt;
+										javascript
+										rule={ color: "debe indicar su color prefereido"}
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>string</td>
+									<td>data-msj</td>
+									<td>
+										solo se usa atravez del atributo <mark class="label attr">data</mark> en el elemento,
+										es un mensaje personalizados para cada elemento.
+									</td>
+									<td>
+										&lt;input type="color" data-msj="debe indicar su color prefereido"&gt;
+									</td>
+								</tr>
+								<tr>
+									<td>online</td>
+									<td>boolean</td>
+									<td>data-online</td>
+									<td>
+										indica si se valida los campos en linea.
+									</td>
+									<td>
+									 true
+									</td>
+								</tr>
+								<tr>
+									<td>result</td>
+									<td>string || elemento</td>
+									<td>data-result</td>
+									<td>
+										indica el elemento que se usara para mostrar el mensaje de error
+										siempre y cuando classMsjError sea distinto de <mark class="label script font-weight-bold">false</mark> o <mark class="label script font-weight-bold">null</mark>
+									</td>
+									<td>
+									 true
+									</td>
+								</tr>
+								<tr>
+									<td>event</td>
+									<td>string</td>
+									<td>data-event</td>
+									<td>
+										indica el evento a disparar el formulario.
+									</td>
+									<td>
+									 submit
+									</td>
+								</tr>
+								<tr>
+									<td>output</td>
+									<td>string || elemento</td>
+									<td>data-output</td>
+									<td>
+										indica el elemento que mostrara el mensaje del formulario al ser validado.
+									</td>
+									<td>
+									 output
+									</td>
+								</tr>
+								<tr>
+									<td>showOp</td>
+									<td>boolean</td>
+									<td>data-show-op</td>
+									<td>
+										indica si se muestra o no un mensaje
+									</td>
+									<td>
+										true
+									</td>
+								</tr>
+								<tr>
+									<td>classEout</td>
+									<td>string</td>
+									<td>data-class-eout</td>
+									<td>
+										indica la clase que se utilizara para el elemento de output en caso de error
+									</td>
+									<td>
+										alert-danger
+									</td>
+								</tr>
+								<tr>
+									<td>classVout</td>
+									<td>string</td>
+									<td>data-class-vout</td>
+									<td>
+										indica la clase que se utilizara para el elemento de output en caso de validacion
+									</td>
+									<td>
+										alert-success
+									</td>
+								</tr>
+								<tr>
+									<td>xhr</td>
+									<td>objeto</td>
+									<td>data-xhr</td>
+									<td>
+										opciones para el envio de ajax.
+									</td>
+									<td>
+										sera mostrado en el apartado <a href="#ajax">Ajax</a>.
+									</td>
+								</tr>
+							</tbody>
+							</table>
+						</div>
+						<div class="example" data-text="dataset">
+							<fieldset>
+								<legend>Uso de DataSet</legend>
+								<form id="dataform" data-role="validate" data-online="true" data-on-success="success" data-on-error="error">
+									<div class="form-row">
+										<div class="col-md-6 mb-3">
+											 <input type="text" class="form-control" placeholder="Primer Nombre" data-required data-msj="Indique su primer nombre">
+										</div>
+										<div class="col-md-6 mb-3">
+											 <input type="text" class="form-control" placeholder="Segundo Nombre">
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-6 mb-3">
+											 <input type="text" class="form-control" placeholder="Primer Apellido" data-required data-msj="Indique su primer apellido">
+										</div>
+										<div class="col-md-6 mb-3">
+											 <input type="text" class="form-control" placeholder="Segundo Apellido">
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-6 mb-3">
+											 <input type="number"  min="18" max="45" step="1" data-type-valid="min,max" class="form-control" placeholder="Edad" data-required data-msj="Debe agregar una edad comprendida entre 18 y 45">
+										</div>
+										<div class="col-md-6 mb-3">
+											<div class="form-group">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="" data-required>
+													<label class="form-check-label">
+														Acepta los terminos y condiciones?
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<button class="btn btn-primary" type="submit">Enviar</button>
+								</form>
+							</fieldset>
+						</div>
+						<p> Como hemos visto solo usando los atributos <mark class="label attr">data</mark> podemos validar de manera rapida y sencialla los formularios</p>
+						<div class="example code" data-text="Codigo">
+							<pre class="prettyprint linenums lang-css" id="form-data"></pre>
+						</div>
+						<div class="example" data-text="javascript">
+							<fieldset>
+								<legend>Uso de Javascript</legend>
+								<form id="javaform">
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-user"></i></div>
+										</div>
+										<input type="text" class="form-control" placeholder="Usuario"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-lock"></i></div>
+										</div>
+										<input type="password" class="form-control" placeholder="Clave"/>
+									</div>
+									<button class="btn btn-primary" type="submit">Enviar</button>
+								</form>
+							</fieldset>
+						</div>
+						<p>Codigo javascript</p>
+						<div class="example code" data-text="Codigo html">
+							<pre class="prettyprint linenums lang-css" id="form-js"></pre>
+						</div>
+						<div class="example code" data-text="Codigo js">
+							<pre class="prettyprint linenums lang-js" id="js-form">
+$("#javaform").validate({
+	allrequired:true,
+	onError:function(e,ms){
+		var m = "Error al Validar formulario";
+		if(ms != ""){
+			m += "\n"+ ms;
+		}
+		$("#msjdata").html(m);
+		$("#eventdata .modal-header").addClass('bg-red').removeClass('bg-blue bg-green');
+		$("#eventdata").modal('show');
+	},
+	onSuccess: function(f,ms){
+		var m = "";
+		if(ms != ""){
+			m += "\n"+ ms;
+		}
+		$("#msjdata").html(m);
+		$("#eventdata .modal-header").addClass('bg-green').removeClass('bg-red bg-blue');
+		$("#eventdata").modal('show');
+	},
+	result:'&lt;span class="alert"&gt;&lt;/span&gt;',
+	classMsjError:'alert-danger',
+	showOp:false
+});
+							</pre>
+						</div>
+					</div>
+					<hr class="bd-violet hrxl"/>
+					<div id="ajax" class="section">
+						<h3>Ajax</h3>
+						<p>
+							Entrando en el mundo de ajax, ya hemos de conocer ajax jQuery.
+						</p>
+						<div class="example" data-text="javascript">
+							<fieldset>
+								<legend>Envio y validaci&oacute;n de datos</legend>
+								<form id="ajaxform" data-role="validate" data-online="true" method="post" action="php/car.php" data-xhr="true" data-on-success="xhrsucces" data-on-error="xhrerror">
+									<div class="form-group">
+										<label for="name">Correo Electronico</label>
+										<input type="email" name="email" class="form-control" data-required="true" data-type-valid="email" placeholder="Su Correo ">
+									</div>
+									<div class="form-group">
+										<label for="name">Nombre y Apellido</label>
+										<input type="text" name="noapel" class="form-control" placeholder="Ingrese su nombre completo minimos 6 caracteres maximo 50" minlength="6" maxlength="50" data-type-valid="minlength,maxlength">
+									</div>
+									<div class="form-group">
+										<label for="name">Sexo</label>
+										<div class="form-check form-check-inline">
+											<input type="radio" class="form-check-input" name="sex" id="sex1" value="m" data-required="true">
+											<label class="form-check-label">M</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input type="radio" class="form-check-input" name="sex" id="sex2" value="f" data-required="true">
+											<label class="form-check-label">F</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="name">Lenguaje</label>
+										<select class="form-control" data-required="true" name="lang">
+											<option value="">--Elije--</option>
+											<option value="es">Espa&ntilde;ol</option>
+											<option value="en">Ingles</option>
+											<option value="it">Italiano</option>
+										</select>
+									</div>
+									<button class="btn btn-success" type="submit">Enviar</button>
+									<output role="alert" class="w-100"></output>
+									<div class="p-1 w-100">
+										<h4>Php Responde:</h4>
+										<div id="resulst"></div>
+									</div>
+								</form>
+							</fieldset>
+						</div>
+						<p>Ahora el codigo, es algo simple nada de javascript</p>
+						<div class="example code" data-text="Codigo">
+							<pre class="prettyprint linenums lang-css" id="form-xhr"></pre>
+						</div>
+						<p>
+							Explico en este ejemplo vemos el uso de ajax para el envio de formulario los 
+							cuales se usan el atributo de <mark class="label attr">data-xhr</mark> si se estrablece
+							a <mark class="label script">true</mark> tomamos los valores del formulario para el envio los cuales son
+							<mark class="label attr">method</mark> para el tipo de envio <mark class="label attr">action</mark>
+							para la url y los datos del formulario. los atributos <mark class="label attr">data-on-error</mark> y 
+							<mark class="label attr">data-on-success</mark> se les dan ajax para que los use por su sucesores.
+							otra forma de usar este atributo es atravez de <mark class="label script">JSON</mark>, 
+							<mark class="label attr">data-xhr="{url:'index.php',type:'POST'}"</mark>, siempre se tomara los datos
+							del formulario para la opcion <mark class="label script">data</mark>  de ajax.
+						</p>
+					</div>
+					<hr class="bd-yellow hrxl"/>
+					<div id="formval" class="section">
+						<h3>Valores del Formulario</h3>
+						<p>
+							Te ofresco una forma rapida y sencilla de obtener los datos de los formularios
+							con javascript solo debemos usar la funcion <mark class="label script">formval</mark>, 
+							es sencillo no acepta ningun parametro y te devuelve un objeto con todos los valores de un 
+							formulario.
+						</p>
+						<div class="example" id="btn" data-text="formval">
+							<p>Porfavor rellene alguno de los formularios anteriores y presione sobre su respectivo bot&oacute;n</p>
+							<button type="button" class="btn btn-primary" data-form="fmbasic">Basico</button>
+							<button type="button" class="btn bg-orange fg-white bg-hover-darkOrange" data-form="dataform">DataSet</button>
+							<button type="button" class="btn bg-orange fg-white bg-hover-darkOrange" data-form="javaform">Javascript</button>
+							<button type="button" class="btn bg-violet fg-white bg-hover-darkViolet" data-form="ajaxform">Ajax</button>
+							<pre class="prettyprint linenums lang-js" id="coderesul"></pre>
+						</div>
+						<p> Es muy facil</p>
+						<div class="example code" data-text="Codigo">
+							<pre class="prettyprint linenums lang-css" id="form-xhr">
+var a = $("<span id="data">mi_formulario</span>").formval();
+							</pre>
+						</div>
+						<small>
+							Si ven caracteres raro como <i>fv-6f3-a58-41db</i> o algo similar no te preocupes HTML5VALID asigna un id automatico a los elementos del 
+							formulario que no poseen el atributo <mark class="label attr">name</mark> o <mark class="label attr">id</mark>.
+						</small>
+					</div>
+				</main>
+			</div>
+		</div>
+		<!-- Modales -->
+		<div class="modal" tabindex="-1" role="dialog" id="eventdata">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header fg-white">
+						<h5 class="modal-title">Resultados de Validaci&oacute;n</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p id="msjdata"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- jQuery core JavaScript
+		================================================== -->
+		<script src="js/jquery.min.js"></script>
+		<!-- Bootstrap core JavaScript and Depends
+		================================================== -->
+		<script src="js/popper.min.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<!-- Prettify core JavaScript
+		================================================== -->
+		<script src="js/prettify/run_prettify.js?autoload=true"></script>
+		<!-- HTML5 VALIDADOR
+		================================================== -->
+		<script src="../src/html5valid.js" id="str1"></script>
+		<!-- Script de ejemplo
+		================================================== -->
+		<script>
+			$(function(){
+				function htmlEscape(s) {
+					return s
+					  .replace(/&/g, '&amp;')
+					  .replace(/</g, '&lt;')
+					  .replace(/>/g, '&gt;');
+				}
+				function tabulador(i){
+					var t = "    ";
+					if(i > 1){
+						for(var e = 1; e<=i; e++){
+							t += "    ";
+						}
+					}
+					return t;
+				}
+				function ordent(cadena){
+					var value = "", e = 1;
+					if(cadena != ""){
+						$.each(cadena.split("\n"),function(l,c){
+							if(c != ""){
+								c = $.trim(c);
+								if(c.indexOf("</") != -1){
+									e--;
+									e = (e > 0)?e:1;
+									value += tabulador(e);
+									value += c+"\n";
+								}else{
+									value += tabulador(e);
+									value += c+"\n";
+									e++;
+								}
+							}
+						})
+					}
+					return value;
+				}
+				$("#javaform").validate({
+					allrequired:true,
+					onError:function(e,ms){
+						var m = "Error al Validar formulario";
+						if(ms != ""){
+							m += "\n"+ ms;
+						}
+						$("#msjdata").html(m);
+						$("#eventdata .modal-header").addClass('bg-red').removeClass('bg-blue bg-green');
+						$("#eventdata").modal('show');
+					},
+					onSuccess: function(f,ms){
+						var m = "";
+						if(ms != ""){
+							m += "\n"+ ms;
+						}
+						$("#msjdata").html(m);
+						$("#eventdata .modal-header").addClass('bg-green').removeClass('bg-red bg-blue');
+						$("#eventdata").modal('show');
+					},
+					result:'<span class="alert"></span>',
+					classMsjError:'alert-danger',
+					showOp:false
+				});
+				var formularioBasic = $("#fmbasic"),
+					formularioData = $("#dataform"),
+					formularioJava = $("#javaform"),
+					formularioAjax = $("#ajaxform"),
+					htmlBasic = ordent(formularioBasic.html()), 
+					htmlData = ordent(formularioData.html()),
+					htmlJava = ordent(formularioJava.html()),
+					htmlAjax = ordent(formularioAjax.html()),
+					s1 = $("#str1")[0].outerHTML,
+					script =s1.replace(
+					/&lt;script src[\s\S]*?&gt;&lt;\/script&gt;|&lt;!--\?[\s\S]*?--&gt;|&lt;pre\b[\s\S]*?&lt;\/pre&gt;/g,
+					'<span class="operative">$&<\/span>');
+				
+				$("#script").html(htmlEscape(script));
+				var codeBasic = htmlEscape('<form data-role="validate" data-allrequired="true">\n'+htmlBasic+'</form>\n');
+				var codeData = htmlEscape('<form data-role="validate" data-online="true" data-on-success="success">\n'+htmlData+'</form>\n');
+				var codeJava = htmlEscape('<form id="javaform">\n'+htmlJava+'</form>\n');
+				var codeAjax = htmlEscape('<form id="ajaxform" data-role="validate" data-online="true" method="post" action="php/car.php" data-xhr="true" data-on-success="xhrsucces" data-on-error="xhrerror">\n'+htmlAjax+'</form>\n');
+				$("#form-basic").html(codeBasic);
+				$("#form-data").html(codeData);
+				$("#form-js").html(codeJava);
+				$("#form-xhr").html(codeAjax);
+				
+				$("#btn .btn").click(function(e){
+					e.preventDefault();
+					var form = $("#"+$(this).data("form"));
+					if(form.length != 0){
+						var v = form.formval();
+						var txt = "{\n";
+						$.each(v,function(i,v){
+							txt += "  "+i +":{\n";
+							$.each(v,function(k,c){
+								txt += "    "+k+":'"+c+"',\n";
+							})
+							txt += "  }\n";
+						})
+						txt += "}";
+						$("#coderesul").html(txt);
+						$("#data").html("#"+$(this).data("form"));
+					}
+				})
+			})
+		</script>
+	</body>
+</html>
