@@ -4,7 +4,7 @@
 
 * Autor: Robert Pérez
 * Email: delfinmundo@gmail.com
-* Licencia: [MIT](LICENCE.md)
+* Licencia: [MIT](LICENCE)
 
 ## Validaciones
 
@@ -18,7 +18,7 @@ Es soportado por todos los navegadores moderno, ya que para la fecha el 90% de l
 
 ## Dependencias
 
-jQuery >= 1.9
+jQuery >= 3
 
 # Documentacion
 
@@ -61,7 +61,7 @@ Opciones del formulario.
 * showOp 	boolean 	data-show-op 	indica si se muestra o no un mensaje.
 * classEout 	string 	data-class-eout 	indica la clase que se utilizara para el elemento de output en caso de error.
 * classVout 	string 	data-class-vout 	indica la clase que se utilizara para el elemento de output en caso de validacion.
-* xhr 	objeto 	data-xhr 	opciones para el envio de ajax. 
+* xhr 	objeto 	data-xhr 	opciones para el envio de ajax.
 
 Opciones de los elementos
 
