@@ -6,30 +6,144 @@
 		<title>HTML5VALID</title>
 		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-		<style type="text/css">
-			.bd-navbar{
-				background-color: #9C27B0;
-			}
-		</style>
+		<link rel="stylesheet" type="text/css" href="css/demo.css">
+		<link rel="stylesheet" type="text/css" href="../dist/css/html5valid.css">
 	</head>
 	<body>
-		<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+		<header class="fixed-top navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
 			<a href="#" class="navbar-brand mr-0 mr-md-2">HTML5VALID</a>
-			<nav class="navbar-nav-scroll">
-				<ul class="navbar-nav flex-row ml-md-auto d-flex bd-navbar-nav">
+			<nav class="navbar-nav-scroll ml-md-auto">
+				<ul class="navbar-nav flex-row  d-flex bd-navbar-nav">
 					<li class="nav-item">
-						<a href="" class="nav-link p-2" target="_blank" rel="noopener">
+						<a href="https://tuwebrep.blogspot.com" class="nav-link p-2" target="_blank" rel="noopener">
 							<i class="fa fa-file-text-o"></i>
 						</a>
 					</li>
-					<li class="nav-item"><i class="fa fa-globe"></i></li>
-					<li class="nav-item"><i class="fa fa-github-alt"></i></li>
+					<li class="nav-item">
+						<a href="https://tuwebrep.blogspot.com" class="nav-link p-2" target="_blank" rel="noopener">
+							<i class="fa fa-globe"></i>
+						</a>
+					</li>
+					<li class="nav-item"><a href="https://github.com/REP98/Html5Valid.git" class="nav-link p-2" target="_blank" rel="noopener">
+							<i class="fa fa-github-alt"></i>
+						</a>
+					</li>
 				</ul>
 			</nav>
 		</header>
-		<main class="full-width"></main>
+		<div class="container-fluid">
+			<div class="row flex-xl-nowrap">
+				<div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+					<div class="bd-seach d-flex align-items-center">
+						<span class="autocomplete">
+							<input type="search" class="form-control" id="search" placeholder="Buscar.." role="combobox" style="position: relative; vertical-align: top;">
+						</span>
+						<button class="btn btn-link d-md-none p-0 ml-3" data-toggle="collapse" data-target="#doc-list">
+							<i class="fa fa-ellipsis-v"></i>
+						</button>
+					</div>
+					<nav class="collapse bd-links" id="doc-list">
+						<div class="bd-toc-item">
+							<a href="#basic" class="bd-toc-link">
+								Introducción
+							</a>
+						</div>
+						<div class="bd-toc-item">
+							<a href="#opt" class="bd-toc-link">
+								Opciones
+							</a>
+						</div>
+						<div class="bd-toc-item">
+							<a href="#js" class="bd-toc-link">
+								Javascript
+							</a>
+						</div>
+						<div class="bd-toc-item">
+							<a href="#ajax" class="bd-toc-link">
+								Ajax
+							</a>
+						</div>
+						<div class="bd-toc-item">
+							<a href="#fromval" class="bd-toc-link">
+								Valores de Formulario
+							</a>
+						</div>
+					</nav>
+				</div>
+				<main class="col-12 col-md-9 col-xl-10 pl-md-5 bd-content mt-md-4">
+					<h1 style="color:#9C27B0" class="text-shadow display-2 text-center mt-4">Html5 Validaci&oacute;n</h1>
+					<p class="lead text-center">Validador y manejador de formularios usuando las api de javascript y html5</p>
+					<hr class="mt-5 mb-2" style="border-color:rgba(0,0,0,.1)">
+					<div id="basic">
+						<p class="lead">
+							HTML5Valid, es un plugins javascript que no permite validar cualquier formulario de forma sencialla y de manera automatica.
+						</p>
+						<h3>Instalación</h3>
+						<p>
+							Para instalarlo es muy sencillo solo necesita <a href="https://github.com/REP98/Html5Valid.git">Descargar</a> este plugin desde github y copiar la carpeta
+							dist a su proyecto, luego copie y pege las lineas a continuación.
+						</p>
+						<pre class="lang-html">
+							&lt;!-- Agrege esto al head --&gt;
+							&lt;link rel="stylesheet" type="text/css" href="../dist/css/html5valid.css"&gt;
+							&lt;!-- Agrege esto al final de Body --&gt;
+							&lt;script src="../dist/js/html5valid.js"&gt;&lt;/script&gt;
+						</pre>
+						<p>Veamos un ejemplo</p>
+						<h3>Basico</h3>
+						<div class="example">
+							<fieldset>
+								<legend>Validacion de Formulario con campos HTML5</legend>
+								<form data-role="html5valid" data-all-required="true" id="fm-1">
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text">A</div>
+										</div>
+										<input type="text" class="form-control" placeholder="Texto"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-lock"></i></div>
+										</div>
+										<input type="password" class="form-control" placeholder="Clave"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text">&#64;</div>
+										</div>
+										<input type="email" class="form-control" placeholder="Correo"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+										</div>
+										<input type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+										</div>
+										<input type="time" class="form-control" placeholder="hh:mm:ss"/>
+									</div>
+									<div class="input-group my-1">
+										<div class="input-group-prepend">
+											<div class="input-group-text"><i class="fa fa-calculator"></i></div>
+										</div>
+										<input type="number" step="1" min="0" max="99" class="form-control" placeholder="numerico"/>
+									</div>
+									<button type="submint" class="btn btn-primary w-100"><i class=""></i> Validar</button>
+								</form>
+							</fieldset>
+						</div>
+						<pre data-content="#fm-1"></pre>
+					</div>
+				</main>
+			</div>
+		</div>
 		<footer></footer>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/demo.js"></script>
+		<script src="../dist/js/html5valid.js"></script>
 	</body>
 </html>
