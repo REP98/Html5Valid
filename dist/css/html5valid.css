@@ -1,18 +1,26 @@
-.hv.hv-valid input:not([type=submit]):not([type=reset]):valid, .hv.hv-valid texarea:valid, .hv.hv-valid select:valid {
-  color: #41D408;
-  border-color: #41D408;
+.hv input:not([type=submit]):not([type=reset]):valid, .hv texarea:valid, .hv select:valid {
+  color: #41D408 !important;
+  border-color: #41D408 !important;
 }
-.hv.hv-valid input:not([type=submit]):not([type=reset]):valid:hover, .hv.hv-valid texarea:valid:hover, .hv.hv-valid select:valid:hover {
-  color: #32a306;
-  border-color: #57f619;
+.hv input:not([type=submit]):not([type=reset]):valid:hover, .hv texarea:valid:hover, .hv select:valid:hover {
+  color: #32a306 !important;
+  border-color: #57f619 !important;
 }
-.hv.hv-invalid input:not([type=submit]):not([type=reset]):valid, .hv.hv-invalid texarea:valid, .hv.hv-invalid select:valid {
-  color: #C00;
-  border-color: #C00;
+.hv input:not([type=submit]):not([type=reset]):in-range, .hv texarea:in-range, .hv select:in-range {
+  color: #41D408 !important;
+  border-color: #41D408 !important;
 }
-.hv.hv-invalid input:not([type=submit]):not([type=reset]):valid:hover, .hv.hv-invalid texarea:valid:hover, .hv.hv-invalid select:valid:hover {
-  color: #990000;
-  border-color: red;
+.hv input:not([type=submit]):not([type=reset]):invalid, .hv texarea:invalid, .hv select:invalid {
+  color: #C00 !important;
+  border-color: #C00 !important;
+}
+.hv input:not([type=submit]):not([type=reset]):invalid:hover, .hv texarea:invalid:hover, .hv select:invalid:hover {
+  color: #990000 !important;
+  border-color: red !important;
+}
+.hv input:not([type=submit]):not([type=reset]):out-of-range, .hv texarea:out-of-range, .hv select:out-of-range {
+  color: #990000 !important;
+  border-color: red !important;
 }
 .hv.required input:not([type=submit]):not([type=reset]):required, .hv.required texarea:required, .hv.required select:required {
   color: #1CBEEF;
@@ -21,6 +29,35 @@
 .hv.required input:not([type=submit]):not([type=reset]):required:hover, .hv.required texarea:required:hover, .hv.required select:required:hover {
   color: #0e9eca;
   border-color: #4cccf2;
+}
+
+.help {
+  display: none;
+  margin-top: 0.25rem;
+  color: #6C757D;
+  width: 100%;
+}
+.help .help-text {
+  display: block;
+  color: #6C757D;
+  width: 100%;
+  font-size: 80%;
+  font-weight: 400;
+}
+.help .help-icons {
+  width: 18px;
+  height: 18px;
+  color: #6C757D;
+  display: inline;
+  padding-left: 0.5rem;
+}
+.help .help-icons + .help-text {
+  margin-left: 0.25rem;
+  width: calc(100% - 20px - 0.25rem);
+  display: inline;
+}
+.help-invalid, .help-invalid .help-icons, .help-invalid .help-text {
+  color: #C00 !important;
 }
 
 /*# sourceMappingURL=html5valid.css.map */

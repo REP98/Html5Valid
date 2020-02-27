@@ -2,42 +2,40 @@
 
 .hv{
 
-	&.hv{
-		&-valid{
-			
-			& input:not([type=submit]):not([type=reset]),
-			& texarea,
-			& select,
-			{
-				&:valid{
-					color: $valid;
-					border-color: $valid;
+	& input:not([type=submit]):not([type=reset]),
+	& texarea,
+	& select,
+	{
+		&:valid{
+			color: $valid !important;
+			border-color: $valid !important;
 
-					&:hover{
-						color: darken($valid, 10);
-						border-color: lighten($valid, 10);
-					}
-				}
+			&:hover{
+				color: darken($valid, 10) !important;
+				border-color: lighten($valid, 10) !important;
 			}
 		}
-		&-invalid{
-			
-			& input:not([type=submit]):not([type=reset]),
-			& texarea,
-			& select,
-			{
-				&:valid{
-					color: $invalid;
-					border-color: $invalid;
 
-					&:hover{
-						color: darken($invalid, 10);
-						border-color: lighten($invalid, 10);
-					}
-				}
+		&:in-range{ //Campos Numeros denrto del Rango
+			color: $valid !important;
+			border-color: $valid !important;
+		}
+		&:invalid{
+			color: $invalid !important;
+			border-color: $invalid !important;
+
+			&:hover{
+				color: darken($invalid, 10) !important;
+				border-color: lighten($invalid, 10) !important;
 			}
+		}
+		&:out-of-range{ //Campos Numeros fuera de Rango
+			color: darken($invalid, 10) !important;
+			border-color: lighten($invalid, 10) !important;
 		}
 	}
+		
+	
 	&.required{
 
 		& input:not([type=submit]):not([type=reset]),
@@ -55,4 +53,43 @@
 			}
 		}
 	}
+}
+.help{
+	display: none;
+	margin-top: 0.25rem;
+	color:#6C757D;
+	width: 100%;
+	
+
+	& .help-text{
+		display: block;
+		color:#6C757D;
+		width: 100%;
+		font:{
+			size:80%;
+			weight:400;
+		}
+	}
+	& .help-icons{
+		width: 18px;
+		height: 18px;
+		color:#6C757D;
+		display: inline;
+		padding-left: 0.5rem;
+		& + .help-text{
+			margin-left: 0.25rem;
+			width: calc(100% - 20px - 0.25rem);
+			display: inline;
+		}
+	}
+	&-invalid{
+		&, & .help-icons, & .help-text{
+			color: $invalid !important;
+		}
+
+	}
+}
+
+.notice{
+
 }

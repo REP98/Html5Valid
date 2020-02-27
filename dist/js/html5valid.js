@@ -58,17 +58,155 @@
 		return false;
 	}
 
+	var Help = {
+		options:{
+			cls:'',
+			text:'',
+			icons:''
+		},
+		init:function(el,options){
+			this.elem = el;
+			this.element = $(this.elem);
+			this.options = $.extend({}, this.options, options);
+			this._create();
+			
+			return this;
+		},
+		_create:function(){
+			var e = this.element, o = this.options,
+			help = $('<span>').addClass('help');
+			help.addClass(o.cls);
+			let text = (o.text.indexOf('<') > -1)?$(text):$('<span>'), icons = "";
+				text.addClass('help-text');
+				text.html(o.text);
+			if(o.icons != ""){
+				if(o.icons.indexOf('<') > -1){
+					icons = $(o.icons);
+				}else{
+					icons = $('<i>');
+					icons.addClass(o.icons);
+				}
+				icons.addClass('help-icons');
+				icons.appendTo(help);
+				text.appendTo(help);
+			}else{
+				help.appendTo(text);
+			}
+			help.insertAfter(e);
+			this.help = help;
+			this.help.fadeIn();
+			e.blur(function(event) {
+				if(this.validity.valid){
+					help.fadeOut(function(){
+						help.remove();
+					})
+				}
+			});
+		},
+		setText:function(newText = "", icons = ""){
+			var d = this.element.data('help');
+			if($.isNull(d) && $.isUndefined(d)){
+				let help = d.help, text = help.find('help-text'),
+				icon = help.find('help-icons');
+				if(newText != true && newText != ""){
+					text.html(newText);
+				}
+				if(icon.length > 0 && icons != true && icons != ""){
+					var clsOld = icon.attr('class');
+					icon.removeClass(clsOld).addClass('help-icons').addClass(icons);
+				}
+				this.element.data('help', $.extend({}, d, {help:help}) );
+				return d;
+			}
+		},
+		setStyle:function(cls){
+			var d = this.element.data('help');
+			if($.isNull(d) && $.isUndefined(d)){
+				var clsOld = d.help.attr('class');
+				d.help.removeClass(clsOld).addClass('help');
+				if($.isString(cls)){
+					d.help.addClass(cls);
+				}else{
+					let help = d.help, text = help.find('help-text'),
+					icon = help.find('help-icons');
+					help.addClass(cls.help);
+					text.removeClass( text.attr('class') ).addClass('help-text').addClass(cls.text);
+					if(icon.length > 0){
+						icon.removeClass( icon.attr('class') ).addClass('help-icons').addClass(cls.icons);
+					}
+					d.help = help;
+				}
+
+				this.element.data('help', $.extend({}, d, {help:help}) );
+				return d;
+			}
+		}
+	};
+
+	var Notice = {
+		options:{
+			cls:'',
+			bg:'',
+			fg:'',
+			icons:'',
+			duraction:1000,
+			onEscClickClose:true,
+		},
+		isMovil:function(){
+			return ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ?
+					   true: false;
+		},
+		init:function(options){
+			this.options = $.extend({}, this.options, options);
+			this._create();
+			return this;
+		},
+		_createIcons: function(){
+			var ico = this.options.icons, icons;
+			if(ico.indexOf('<') > -1){
+				icons = ico;
+			}else if(ico != ''){
+				icons = $('<i>').addClass(ico);
+			}
+			return icons;
+		}
+		_create:function(){
+			var that = this, o = this.options;
+			if(this.isMovil()){
+
+			}else{
+				this._createNotice();
+			}
+
+		},
+		_createNotice:function(){
+			var o = this.options, notice = $('<div>'),
+				icons = $('<i>'),
+				text = $('<span>'),
+				x = $('<span>');
+
+			notice.attr('id', $.uniqId('notice')).addClass('notice');
+
+			icons = this._createIcons();
+			if(!$.isUndefined(icons)){
+				icons.addClass('notice-icons');
+				icons.appendTo(notice);
+			}
+		}
+	};
 	var HV = {
 		version: 2.0,
 		options:{
 			novalidate: true,
 			allRequired:false,
 			cls:'hv',
-			clsValid:'hv-valid',
-			clsInvalid:'hv-invalid',
+			clsValid:'',
+			clsInvalid:'',
 			online:false,
 			event:'submit',
 			addClsRequired:true,
+			xhr:{},
+			showTypeError:'help',//tootlip - Notific- Toostad
 			rule:{
 				valido:'Formulario Valido',
 				invalido:'Formulario Invalido',
@@ -90,7 +228,14 @@
 				decimal:'No es un decimal Valido',
 				required:'Elemento Requerido'
 			},
-			onError:(el,text)=>{}
+			onError:(el,text)=>{},
+			onSuccess:(el,text)=>{},
+			//Options Plugis exta
+			help:{
+				text:'',
+				icons:'fa fa-times',
+				cls:'help-invalid'
+			}
 		},
 		optionsInputs:{
 			typeValid:null,
@@ -101,7 +246,7 @@
 		init:function(){
 			this.widgets = $('[data-role*="html5valid"]');
 			this.observer();
-
+			this.xhrs = {};
 			this.loadElement();
 			return this;
 		},
@@ -294,7 +439,8 @@
 			var o = this.options;
 			this.novalidate(o.novalidate);
 			this.allRequired(o.allRequired);
-			this.element.addClass(o.cls).addClass(o.clsValid).addClass(o.clsInvalid);
+			this.xhr(o.xhr);
+			this.element.addClass(o.cls);
 			if(o.addClsRequired){
 				this.element.addClass('required');
 			}
@@ -342,7 +488,19 @@
 				}
 		},
 		__showMsj:function(e){
-			console.log("INVALID",e);
+			var o = e.data('hv-options'), op = this.options,
+			msj = e.data('message') || o.message, rule = op.rule;
+			if(msj == ""){ msj = rule[e.attr('type')]; }
+			e.focus();
+			switch (op.showTypeError) {
+				case 'help':
+					let help = {
+						text:msj
+					};
+					e.help( $.extend({}, op.help, help) );
+				break;
+			}
+
 		},
 		_online:function(e){
 			var that = this, d = e.data('hv-options'), type = e.attr('type'), select = e.is('select');
@@ -385,73 +543,85 @@
 		},
 
 		send:function(ev){
-			var that = this, e = this.element, op = this.options, valid = false,
+			var that = this, e = this.element, op = this.options, valid = true,
 				inputs = e.find(":input").not(":submit"),
 				submit = e.find(':submit'),
 				result = 0, i = 0, l = inputs.length,
 				funcs = this.funcs;
-				do{
-					let elem = inputs[i],
-						el = $(elem),
-						o = el.data('hv-options'),
-						msj = (o.msj == "")? op.rule[ el.attr('type') ]: o.msj,
-						fn = [], arg = [];
+			do{
+				let elem = inputs[i],
+					el = $(elem),
+					o = el.data('hv-options'),
+					msj = (o.message == "")? op.rule[ el.attr('type') ]: o.message,
+					fn = [], arg = [];
+				
+				if(el.attr("required") || o.required){
+					valid = funcs.required(el.val(), el);
+					msj = (!valid)? op.rule.required: msj;
+				}
+				
+				if(!$.isNull(o.typeValid)){
+					let fns = ($.isString(o.typeValid))?String(o.typeValid).split(','):o.typeValid,
+						e = 0;
+						fns = ($.isArray(fn))?fn:[fn];
+					
+					$.each(fns, function(i, val) {
+						let fn_name = $.trim(fns[i]);
+						let value = el.attr(fn_name);
+						fn[i] = fn_name;
+						arg[i] = value;
+					});
+					for(let j in fn){
+						if(!valid) break;
+						let fname = fn[j],
+							im = ['require','equalTo', 'different'];
+							e = j;
+						let _arg = (!$.isUndefined(arg[e]))?arg[e]:false;
+						if($.inArray(fname, im) > -1){ _arg = el; }
+						valid = funcs[fname.trim()](el.val(), _arg);
+						msj =  op.rule[fname] || msj;
+					}
+				}else{
+					for(let f in funcs){
+						if(!valid) break;
+						let t = el.attr('type'),
+							dos = ['minlength','maxlength', 'min', 'max','pattern'],
+							im = ['required','equalTo', 'different'], sv,
+							v = el.val();
 
-					if(msj != "" && !$.isNull(o.msj) && !$.isUndefined(o.msj)){
-						elem.setCustomValidity = msj;
-					}
-					if(el.attr("required") || o.required){
-						valid = funcs.required(el.val(), el);
-						msj = (!valid)? op.rule.required: msj;
-					}
-					if(!$.isNull(o.typeValid)){
-						let fns = ($.isString(o.typeValid))?String(o.typeValid).split(','):o.typeValid,
-							e = 0;
-							fns = ($.isArray(fn))?fn:[fn];
-							
-						$.each(fns, function(i, val) {
-							let fn_name = $.trim(fns[i]);
-							let value = el.attr(fn_name);
-							fn[i] = fn_name;
-							arg[i] = value;
-						});
-						for(let j in fn){
-							if(!valid) break;
-							let fname = fn[j],
-								im = ['require','equalTo', 'different'];
-								e = j;
-							let _arg = (!$.isUndefined(arg[e]))?arg[e]:false;
-							if($.inArray(fname, im) > -1){ _arg = el; }
-							valid = funcs[fname.trim()](el.val(), _arg);
-							msj =  op.rule[fname] || msj;
+						if($.inArray(f, dos) > -1){	sv = el.attr(f); }
+						else if($.inArray(f, im) > -1) {	sv = el; }
+						console.log(t == f, t);
+						if(!$.isNull(el.attr(f)) && !$.isUndefined(el.attr(f))){
+							valid = funcs[f.trim()](v,sv);
 						}
-					}else{
-						for(let f in funcs){
-							if(!valid) break;
-							let t = el.attr('type'),
-								dos = ['minlength','maxlength', 'min', 'max','pattern'],
-								im = ['required','equalTo', 'different'], sv,
-								v = el.val();
-							if($.inArray(f, dos) > -1){	sv = el.attr(f); }
-							else if($.inArray(f, im) > -1) {	sv = el; }
-							if(!$.isNull(el.attr(f)) && !$.isUndefined(el.attr(f))){
-								valid = funcs[f.trim()](v,sv);
-							}
-							if(t == f){ valid = funcs[t.trim()](v,sv); }
-							msj = (!valid)? op.rule[f] : msj;
-						}
+						if(t == f){ valid = funcs[t.trim()](v,sv); }
+						msj = (!valid)? op.rule[f] : msj;
 					}
-					if(!valid){
-						if($.isFunction(o.onError)){
-							o.onError.call(e,el,msj);
-						}
-						that.__showMsj(el);
-						el.focus();
-						return false;
+				}
+				if(msj != ""){
+					elem.setCustomValidity = msj;
+				}
+				el.data('hv-options', $.extend({}, o, {message:msj}));
+				if(!valid){
+					if($.isFunction(o.onError)){
+						o.onError.call(e,el,msj);
 					}
-					//result += !valid ? 1 : 0;
-					i++;
-				}while(i < l);
+					that.__showMsj(el);
+					e.addClass(o.clsInvalid);
+					el.focus();
+					return false;
+				}
+				result += !valid ? 1 : 0;
+				i++;
+			}while(i < l);
+			if(valid){
+				e.removeClass(o.clsInvalid).addClass(o.clsValid);
+				if(o.xhr && !$.isUndefined(o.xhr)){ $.ajax(this.xhrs); }
+				else{ o.onSuccess.call(this,e, o.rule.valido); }
+			}
+			if(result !== 0){ return false }
+			return valid;
 		},
 
 		novalidate:function(nv){
@@ -467,10 +637,75 @@
 					this.required = true;
 				}
 			});
+		},
+		xhr:function(options = {}){
+			var e = this.element;
+			this.xhrs = $.extend({}, this.options.xhr, options);
+			this.xhrs.type = e.attr("method") || "GET";
+			this.xhrs.url = e.attr("action") || location.href;
+			this.xhrs.error = (jqXHR, textStatus, error)=>{
+				this.options.onError.call(this,e,this.options.rule.xhrError, {
+					jqXHR:jqXHR,
+					code:textStatus,
+					error: error
+				});
+			}
+			this.xhrs.success = (data,textStatus, jqXHR) => {
+				this.options.onSuccess.call(this,data,textStatus,jqXHR);
+			}
+			this.xhrs.data = e.formval();
+			return this.xhrs;
 		}
 
 	};
+	$.fn.formval = function(){
+		var forms = this, elemvalue = {};
+		this.getatt = function(el){
+			if($.isUndefined(el.attr('id')) && $.isUndefined(el.attr("name"))){
+				let newid = $.uniqId('fv');
+				el.attr('id',newid);
+				return newid;				
+			}else{
+				return el.attr("name") || el.attr('id');
+			}
+		}
+		forms.each(function(){
+			let form = $(this);
+			let item = form.find(":input").not(":submit");
+			let elements = {};
+			$.each(item,function(){
+				let el = $(this);
+				let e = forms.getatt(el);
+				let v = el.val();
+				if(this.type == "checkbox" || this.type == 'radio'){
+					if(this.checked){
+						elements[e] = v;
+					}
+				}else{
+					elements[e] = v;
+				}
+			})
+			elemvalue[forms.getatt(form)] = elements;
+		});
+		return elemvalue;
+	};
 
+	$.fn.help = function(options, value, icons){
+		return this.each(function() {
+			var d = $(this).data('help');
+			if($.isUndefined(d) || $.isNull(d)){
+				$(this).data('help', Help.init(this,options) );
+			}else{
+				if(d.hasOwnProperty(options) && options.indexOf("_") == -1){
+					d[options](value, icons);
+				}
+			}
+		});
+	}
+
+	$.notice = function(options){
+		return Notice.init(options);
+	}
 	window.HV = HV;
 	return HV.init();
 })(jQuery);
