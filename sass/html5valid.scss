@@ -1,0 +1,58 @@
+@import "var";
+
+.hv{
+
+	&.hv{
+		&-valid{
+			
+			& input:not([type=submit]):not([type=reset]),
+			& texarea,
+			& select,
+			{
+				&:valid{
+					color: $valid;
+					border-color: $valid;
+
+					&:hover{
+						color: darken($valid, 10);
+						border-color: lighten($valid, 10);
+					}
+				}
+			}
+		}
+		&-invalid{
+			
+			& input:not([type=submit]):not([type=reset]),
+			& texarea,
+			& select,
+			{
+				&:valid{
+					color: $invalid;
+					border-color: $invalid;
+
+					&:hover{
+						color: darken($invalid, 10);
+						border-color: lighten($invalid, 10);
+					}
+				}
+			}
+		}
+	}
+	&.required{
+
+		& input:not([type=submit]):not([type=reset]),
+		& texarea,
+		& select,
+		{
+			&:required{
+				color: $required;
+				border-color: $required;
+
+				&:hover{
+					color: darken($required, 10);
+					border-color: lighten($required, 10);
+				}
+			}
+		}
+	}
+}
