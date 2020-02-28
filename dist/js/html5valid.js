@@ -145,11 +145,10 @@
 
 	var Notice = {
 		options:{
+			text:'',
 			cls:'',
-			bg:'',
-			fg:'',
 			icons:'',
-			duraction:1000,
+			duration:5000,
 			onEscClickClose:true,
 		},
 		isMovil:function(){
@@ -161,6 +160,21 @@
 			this._create();
 			return this;
 		},
+		_media:function(){
+			var nt = this.notice, that = this;
+			var mql = function(m){
+				if(m <= 768){
+					nt.removeClass('notice').addClass('toasts');
+				}else{
+					nt.removeClass('toasts').addClass('notice');
+				}
+				that.open();
+			};
+			$(window).on('resize.notice',function(){
+				var w = $(window).outerWidth();
+				mql(w)
+			})
+		},
 		_createIcons: function(){
 			var ico = this.options.icons, icons;
 			if(ico.indexOf('<') > -1){
@@ -169,44 +183,103 @@
 				icons = $('<i>').addClass(ico);
 			}
 			return icons;
-		}
+		},
 		_create:function(){
 			var that = this, o = this.options;
+			this._createNotice();
 			if(this.isMovil()){
-
+				this.notice.on('touchstart.notice mouseenter.notice',function(){
+					that.close($(this));
+				})
 			}else{
-				this._createNotice();
+				$(document).on('keydown.noctice',(ev) => {
+					console.log(ev)
+					if(ev.keyCode == 27){
+						this.close()
+					}
+				});
 			}
-
+			this.notice.data('notice', this);
+			this._media();
+			this.open(this.notice);
 		},
 		_createNotice:function(){
 			var o = this.options, notice = $('<div>'),
+				that = this,
 				icons = $('<i>'),
 				text = $('<span>'),
 				x = $('<span>');
 
-			notice.attr('id', $.uniqId('notice')).addClass('notice');
-
+			if(this.isMovil()){
+				notice.attr('id', $.uniqId('toasts')).addClass('toasts').addClass(o.cls);
+			}else{
+				notice.attr('id', $.uniqId('notice')).addClass('notice').addClass(o.cls);
+			}
+			x.addClass('notice-btn-close');
+			x.html('&times;')
+			x.appendTo(notice);
 			icons = this._createIcons();
 			if(!$.isUndefined(icons)){
 				icons.addClass('notice-icons');
 				icons.appendTo(notice);
 			}
+			text.addClass('notice-text');
+			text.html(o.text);
+			text.appendTo(notice);
+
+			x.on('click',function(e){
+				let notice = $(this).parent();
+				that.close(notice);
+			})
+			notice.appendTo('body');
+			this.notice = notice;
+
+		},
+		close:function(nt){
+			var notice = nt || this.notice, d = notice.data('notice'),
+			duration = d.options.duration || this.options.duration; 
+			if(this.isMovil()){
+				notice.fadeOut(function() {
+					notice.remove();
+				});
+			}else{
+				notice.css('display','block');
+				notice.animate({
+					top:'100%',
+					opacity:0,
+				},function(){
+					notice.remove();
+				})
+			}
+		},
+		open:function(nt){
+			var notice = nt || this.notice, d = notice.data('notice'),
+			duration = d.options.duration || this.options.duration; 
+			if(this.isMovil()){
+				notice.fadeIn();
+			}else{
+				notice.css('display','block');
+				notice.animate({
+					top:'0px',
+					opacity:1,
+				});
+				setTimeout(()=>{ this.close(notice); },duration);
+			}
 		}
 	};
 	var HV = {
 		version: 2.0,
-		options:{
+		option:{
 			novalidate: true,
 			allRequired:false,
-			cls:'hv',
+			cls:'',
 			clsValid:'',
 			clsInvalid:'',
 			online:false,
 			event:'submit',
 			addClsRequired:true,
 			xhr:{},
-			showTypeError:'help',//tootlip - Notific- Toostad
+			showTypeError:'help',//notice || help
 			rule:{
 				valido:'Formulario Valido',
 				invalido:'Formulario Invalido',
@@ -228,16 +301,23 @@
 				decimal:'No es un decimal Valido',
 				required:'Elemento Requerido'
 			},
-			onError:(el,text)=>{},
-			onSuccess:(el,text)=>{},
+			onError:(jqXHR, textStatus, error)=>{},
+			onSuccess:(data,textStatus, jqXHR)=>{},
 			//Options Plugis exta
 			help:{
 				text:'',
 				icons:'fa fa-times',
 				cls:'help-invalid'
+			},
+			notice:{
+				text:'',
+				cls:'dange',
+				icons:'fa fa-times',
+				duration:5000,
+				onEscClickClose:true,
 			}
 		},
-		optionsInputs:{
+		optionsInput:{
 			typeValid:null,
 			online:false,
 			message:'',
@@ -246,44 +326,47 @@
 		init:function(){
 			this.widgets = $('[data-role*="html5valid"]');
 			this.observer();
+			this.element = null;
 			this.xhrs = {};
+			this.options = {};
 			this.loadElement();
 			return this;
 		},
 		observer:function(){
-			var observer, observerOptions, fnobserver;
-
-			observerOptions = {
-				'childList': true,
-				'subtree': true
+			var observer, observerCallback,
+				observerConfig = {
+				childList: true,
+				attributes: true,
+				subtree: true,
+				characterData: false,
+				attributeOldValue: false,
+				characterDataOldValue: false
 			};
-			fnobserver = function(mutations){
-				mutations.map(function(record){
-
-					if (record.addedNodes) {
-
-						var obj, widgets, plugins;
-
-						for(var i = 0, l = record.addedNodes.length; i < l; i++) {
-							obj = $(record.addedNodes[i]);
-
-							plugins = obj.find('[data-role*="html5valid"]');
-							console.log('observer',obj,plugins);
-							/*if (obj.data('role') !== undefined) {
-								widgets = $.merge(plugins, obj);
-							} else {
-								widgets = plugins;
-							}
-
-							if (widgets.length) {
-								$.hv.loadwidget(widgets);
-							}*/
+			observerCallback = function(mutations){
+				mutations.map(function(mutation){
+					
+					if (mutation.type === 'attributes' && mutation.attributeName !== "data-role") {
+						let element = $(mutation.target);
+						let attr = mutation.attributeName;
+						let data = element.data();
+						if(data.hasOwnProperty('hv')){
+						 	let hv = data.hv,
+						 		observerAtt = {
+						 		'data-novalidate':hv.novalidate,
+						 		'data-all-required':hv.allRequired,
+						 		'data-xhr':hv.xhr
+						 	};
+						 	if(observerAtt.hasOwnProperty(attr)){
+						 		observerAtt[attr].call(hv, element.attr(attr) );
+						 	}
 						}
+					} else  {
+						//console.log("Mutation",mutation);
 					}
 				});
 			};
-			observer = new MutationObserver(fnobserver);
-			observer.observe(document, observerOptions); 
+			observer = new MutationObserver(observerCallback);
+			observer.observe($("html")[0], observerConfig);
 		},
 		loadElement:function(o){
 			this.widgets.each((i,el)=> {
@@ -302,7 +385,7 @@
 			});
 		},
 		_setFromData:function(op, inputs = false){
-			var o = {};
+			var o = {}, obj = ['xhr','rule','help','notice'], fn = ['onError', 'onSuccess'];
 			$.each(op, function(key, value){
 				try {
 					if($.inArray(key,obj) != -1){
@@ -317,18 +400,17 @@
 						}
 					}
 					else{
-						o[key] = $.parseJSON(value);
+						o[key] = JSON.parse(value);
 					}
 				} catch (e) {
 					o[key] = value;
 				}
 			});
 			if(inputs){
-				this.optionsInputs = $.extend({}, this.optionsInputs, o);
+				this.optionsInputs = $.extend({}, this.optionsInput, o);
 			}else{
-				this.options = $.extend({}, this.options, o);
+				this.options = $.extend({}, this.option, o);
 			}
-			
 		},
 		funcs: { 
 			//Atributos
@@ -415,6 +497,9 @@
 			time: function(val){
 				return /^([0-1][0-9]|[2][0-3])(:([0-5][0-9])){1,2}$/i.test(val);
 			},
+			tel: function(val){
+				return /^\d+$/.test(val);
+			},
 			//Otros
 			decimal:function(val){
 				return /^([0-9]{0,3}(\,|\.){0,1}){0,2}[0-9]{1,3}(\,[0-9]{2}|\.[0-9]{2}){0,1}$/.test(val);
@@ -437,14 +522,14 @@
 			this.element = w;
 			this._setFromData(w.data());
 			var o = this.options;
+			this._manager();
 			this.novalidate(o.novalidate);
 			this.allRequired(o.allRequired);
-			this.xhr(o.xhr);
-			this.element.addClass(o.cls);
+			this.element.addClass('hv').addClass(o.cls);
 			if(o.addClsRequired){
 				this.element.addClass('required');
 			}
-			this._manager();
+			
 			if(o.online == true){
 				this.element.find(':input').not(':submit').each((index, el)=> {
 					this._online($(el));
@@ -466,21 +551,22 @@
 				typeValid.on('focus',function(){});
 
 				input.each((index, el)=> {
-					let d = $(el).data('hv-options');
+					let d = $(el).data('hv-options'),
+						required = $(el).data('required') || $(el).attr('required')
+
 					if(!$.isUndefined(d) && !$.isNull(d)){
 						if(d.online){
 							this._online($(el));
 						}
 					}
+					if(d.required){el.required = true; }
 				});
 				if(o.event != "submit"){
-					e.find('[data-event="'+o.event+'"]').on(event, function(ev){
-						ev.preventDefault();
-						that.send(ev);
-					})
+					e.find('[data-event="'+o.event+'"]').on(o.event, 
+						function(ev){ ev.preventDefault(); that.send(ev,$(this)); })
 				}
 				else{
-					e.on(o.event,function(ev){ ev.preventDefault(); that.send(ev); })
+					e.on(o.event,function(ev){ ev.preventDefault(); that.send(ev,$(this)); })
 					 .on('invalid', function(ev){
 					 	$(this).addClass(o.clsInvalid);
 					 	o.onError.call(this,ev.target,o.rule.invalid);
@@ -499,6 +585,12 @@
 					};
 					e.help( $.extend({}, op.help, help) );
 				break;
+				case 'notice':
+					let notice = {
+						text:msj
+					};
+					$.notice($.extend({}, op.notice, notice))
+				break;
 			}
 
 		},
@@ -512,14 +604,14 @@
 					}
 				})
 			}else if(type == 'radio' || type == 'checkbox'){
-				el.on("input click",function(e){
+				e.on("input click",function(e){
 					if(this.required){
 						let valid = self.funcs.required("",$(this));
 						if(!valid){ self._showMsj($(this)) }
 					}
 				})
 			}else{
-				el.on("input",function(e){
+				e.on("input",function(e){
 					let yo = $(this);
 					let v = yo.val();
 					let t = yo.attr("type");
@@ -542,8 +634,8 @@
 			}
 		},
 
-		send:function(ev){
-			var that = this, e = this.element, op = this.options, valid = true,
+		send:function(ev, e){
+			var that = this, op = this.options, valid = true,
 				inputs = e.find(":input").not(":submit"),
 				submit = e.find(':submit'),
 				result = 0, i = 0, l = inputs.length,
@@ -554,16 +646,14 @@
 					o = el.data('hv-options'),
 					msj = (o.message == "")? op.rule[ el.attr('type') ]: o.message,
 					fn = [], arg = [];
-				
 				if(el.attr("required") || o.required){
 					valid = funcs.required(el.val(), el);
 					msj = (!valid)? op.rule.required: msj;
 				}
-				
 				if(!$.isNull(o.typeValid)){
 					let fns = ($.isString(o.typeValid))?String(o.typeValid).split(','):o.typeValid,
 						e = 0;
-						fns = ($.isArray(fn))?fn:[fn];
+						fns = ($.isArray(fns))?fns:[fns];
 					
 					$.each(fns, function(i, val) {
 						let fn_name = $.trim(fns[i]);
@@ -588,10 +678,8 @@
 							dos = ['minlength','maxlength', 'min', 'max','pattern'],
 							im = ['required','equalTo', 'different'], sv,
 							v = el.val();
-
 						if($.inArray(f, dos) > -1){	sv = el.attr(f); }
 						else if($.inArray(f, im) > -1) {	sv = el; }
-						console.log(t == f, t);
 						if(!$.isNull(el.attr(f)) && !$.isUndefined(el.attr(f))){
 							valid = funcs[f.trim()](v,sv);
 						}
@@ -616,9 +704,10 @@
 				i++;
 			}while(i < l);
 			if(valid){
-				e.removeClass(o.clsInvalid).addClass(o.clsValid);
-				if(o.xhr && !$.isUndefined(o.xhr)){ $.ajax(this.xhrs); }
-				else{ o.onSuccess.call(this,e, o.rule.valido); }
+				e.removeClass(op.clsInvalid).addClass(op.clsValid);
+				this.xhr(op.xhr);
+				if(op.xhr && !$.isUndefined(op.xhr)){ $.ajax(this.xhrs); }
+				else{ op.onSuccess.call(this, e, op.rule.valido); }
 			}
 			if(result !== 0){ return false }
 			return valid;
@@ -626,35 +715,43 @@
 
 		novalidate:function(nv){
 			if(nv){ this.element.attr('novalidate','novalidate'); }
+			else{ this.element.removeAttr('novalidate'); }
 		},
 
 		allRequired:function(ar){
 			this.element.find(":input").not(":submit").each(function() {
+				let d = $(this).data('hv-options');
 				if(ar){
 					this.required = true;
 				}
-				else if($(this).data('required') == "true"){
+				else if($(this).data('required') == "true" || d.required == true){
 					this.required = true;
+				}else{
+					this.required = false;
 				}
 			});
 		},
-		xhr:function(options = {}){
-			var e = this.element;
-			this.xhrs = $.extend({}, this.options.xhr, options);
-			this.xhrs.type = e.attr("method") || "GET";
-			this.xhrs.url = e.attr("action") || location.href;
-			this.xhrs.error = (jqXHR, textStatus, error)=>{
-				this.options.onError.call(this,e,this.options.rule.xhrError, {
-					jqXHR:jqXHR,
-					code:textStatus,
-					error: error
-				});
+		xhr:function(options){
+			if(options != false){
+				var e = this.element;
+				this.xhrs = $.extend({}, this.options.xhr, options);
+				this.xhrs.type = e.attr("method") || "GET";
+				this.xhrs.url = e.attr("action") || location.href;
+				this.xhrs.error = (jqXHR, textStatus, error)=>{
+					this.options.onError.call(this,e,this.options.rule.xhrError, {
+						jqXHR:jqXHR,
+						code:textStatus,
+						error: error
+					});
+				}
+				this.xhrs.success = (data,textStatus, jqXHR) => {
+					this.options.onSuccess.call(this,data,textStatus,jqXHR);
+				}
+				this.xhrs.data = e.formval();
+				return this.xhrs;
+			}else{
+				return {};
 			}
-			this.xhrs.success = (data,textStatus, jqXHR) => {
-				this.options.onSuccess.call(this,data,textStatus,jqXHR);
-			}
-			this.xhrs.data = e.formval();
-			return this.xhrs;
 		}
 
 	};

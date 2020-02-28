@@ -60,4 +60,119 @@
   color: #C00 !important;
 }
 
+.notice {
+  display: none;
+  position: fixed;
+  bottom: auto;
+  opacity: 0;
+  right: 0;
+  left: auto;
+  top: 100%;
+  z-index: 9999;
+  width: 16rem;
+  height: auto;
+  background-color: #ddd;
+  padding: 0.5rem;
+  box-shadow: 1px 1px 5px 2px #afacac;
+}
+.notice .notice-btn-close {
+  position: absolute;
+  right: 6px;
+  top: auto;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+.notice .notice-btn-close:hover {
+  color: rgba(0, 0, 0, 0.2);
+}
+.notice .notice-text {
+  word-break: break-all;
+  width: 12rem;
+  position: relative;
+  top: -10px;
+}
+.notice .notice-icons, .notice .notice-text {
+  display: inline-flex;
+}
+.notice .notice-icons {
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  padding-top: 1rem;
+  margin-right: 0.2rem;
+}
+
+.toasts {
+  display: none;
+  position: fixed;
+  bottom: 0.2rem;
+  width: 100%;
+  left: 0;
+  background-color: #ddd;
+  padding: 0.5rem;
+  box-shadow: 1px 1px 5px 2px #afacac;
+  z-index: 9999;
+}
+.toasts .notice-btn-close {
+  float: right;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+.toasts .notice-btn-close:hover {
+  color: rgba(0, 0, 0, 0.2);
+}
+.toasts .notice-text {
+  word-break: break-all;
+  width: calc(100% - 36px);
+  float: left;
+}
+.toasts .notice-icons {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  margin-right: 0.4rem;
+  float: left;
+}
+.toasts .notice-icons + .notice-text {
+  width: calc(100% - 1.5rem - 36px) !important;
+}
+
+.notice.primary, .notice.primary .notice-icons, .notice.primary .notice-text, .notice.primary .notice-btn-close, .notice.dange, .notice.dange .notice-icons, .notice.dange .notice-text, .notice.dange .notice-btn-close, .notice.success, .notice.success .notice-icons, .notice.success .notice-text, .notice.success .notice-btn-close,
+.toasts.primary,
+.toasts.primary .notice-icons,
+.toasts.primary .notice-text,
+.toasts.primary .notice-btn-close,
+.toasts.dange,
+.toasts.dange .notice-icons,
+.toasts.dange .notice-text,
+.toasts.dange .notice-btn-close,
+.toasts.success,
+.toasts.success .notice-icons,
+.toasts.success .notice-text,
+.toasts.success .notice-btn-close {
+  color: #fff !important;
+}
+.notice.primary,
+.toasts.primary {
+  background-color: #0F50F0;
+  box-shadow: 1px 1px 5px 2px #2762f2;
+}
+.notice.secundary,
+.toasts.secundary {
+  background-color: #D4D4D4;
+  box-shadow: 1px 1px 5px 2px #e1e1e1;
+}
+.notice.success,
+.toasts.success {
+  background-color: #00D605;
+  box-shadow: 1px 1px 5px 2px #00f006;
+}
+.notice.dange,
+.toasts.dange {
+  background-color: #F71F1F;
+  box-shadow: 1px 1px 5px 2px #f83838;
+}
+
 /*# sourceMappingURL=html5valid.css.map */

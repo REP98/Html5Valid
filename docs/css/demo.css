@@ -39,7 +39,13 @@
 .text-shadow{
 	text-shadow: 2px 2px 4px rgba(0,0,0,.4);
 }
-
+.subm .bd-toc-link{
+	font-weight: 400 !important;
+}
+.subm{
+	padding-top: 0.4rem;
+	padding-left: 1.3rem;
+}
 * + .example{ margin-rop: 1rem; }
 .example{
 	padding: 1rem;
@@ -57,53 +63,7 @@ pre{
 	margin: 24px 0;
 	border: 2px solid #eee !important;
 }
-pre .linenums{
-	margin-top: 0;
-	margin-bottom: 0;
-	list-style-type: decimal-leading-zero;
-	margin-left: 40px;
-	width: calc(100% - 42px);
-}
-pre .linenums li{
-	list-style-type: decimal !important;
-}
 
-pre .linenums li:nth-child(2n){
-	background-color: #ececec !important;
-}
-.list-code .kwd,
-pre.lang-js .kwd{
-	color: #FD72F8 !important;
-	font-weight: 900;
-}
-.list-code .pln,
-pre.lang-js .pln{
-	color: #2b2b2b !important;
-}
-.list-code .pum,
-pre.lang-js .pun{
-	color: #252d42 !important;
-}
-.list-code .com,
-pre.lang-js .com{
-	color: #989898 !important;
-	font-style: italic;
-	font-size: 0.9rem;
-	font-weight: 200;
-}
-/*HTML*/
-pre.lang-html .tag{
-	color: #e00349 !important;
-}
-pre.lang-html .atn{
-	color: #946307 !important;
-}
-pre.lang-html .pun{
-	color: #252d42 !important;
-}
-pre.lang-html .atv{
-	color: #077d1c !important;
-}
 
 @media (min-width: 768px){
 	.bd-sidebar{
@@ -113,8 +73,11 @@ pre.lang-html .atv{
 		z-index: 1000;
 		height: calc(100vh - 4rem);
 	}
-	.bd-links{
+	.bd-links:not(.subm){
 		display: block !important;
+		max-height: calc(100vh - 9rem);
+	}
+	.subm{
 		max-height: calc(100vh - 9rem);
 	}
 }

@@ -6,8 +6,33 @@
 		<title>HTML5VALID</title>
 		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism-okaidia.min.css" rel="stylesheet" />
 		<link rel="stylesheet" type="text/css" href="css/demo.css">
 		<link rel="stylesheet" type="text/css" href="../dist/css/html5valid.css">
+		<script type="text/javascript">
+			function onerror(jqXHR, textStatus, error){ console.log(jqXHR, textStatus, error); }
+			function onsucess(data,textStatus, jqXHR){
+				$('#results').html("");
+				var pre = $("<pre>");
+				var code = $("<code>").addClass('language-html');
+				code.html(data);
+				code.appendTo(pre);
+				pre.appendTo('#results');
+				Prism.highlightElement(code[0])
+				
+			}
+			function serialize(el,msj){
+				var result = this.element.formval();
+				console.log(result);
+				var data = JSON.stringify(result);
+				var pre = $("<pre>");
+				var code = $("<code>").addClass('language-js');
+				code.html(data);
+				code.appendTo(pre);
+				pre.appendTo('#resul-2');
+				Prism.highlightElement(code[0])
+			}
+		</script>
 	</head>
 	<body>
 		<header class="fixed-top navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
@@ -49,24 +74,36 @@
 							</a>
 						</div>
 						<div class="bd-toc-item">
-							<a href="#opt" class="bd-toc-link">
-								Opciones
-							</a>
-						</div>
-						<div class="bd-toc-item">
-							<a href="#js" class="bd-toc-link">
-								Javascript
-							</a>
-						</div>
-						<div class="bd-toc-item">
 							<a href="#ajax" class="bd-toc-link">
 								Ajax
 							</a>
 						</div>
 						<div class="bd-toc-item">
-							<a href="#fromval" class="bd-toc-link">
-								Valores de Formulario
+							<a href="#opt" class="bd-toc-link">
+								Opciones
 							</a>
+						</div>
+						<div class="bd-toc-item">
+							<a href="#" class="bd-toc-link" data-toggle="collapse" data-target="#doc-utils">
+								Utilidades <i class="fa fa-sort-down"></i>
+							</a>
+							<nav class="collapse bd-links subm" id="doc-utils">
+								<div class="bd-toc-item">
+									<a href="#u-formvalue" class="bd-toc-link">
+										FormValue
+									</a>
+								</div>
+								<div class="bd-toc-item">
+									<a href="#u-help" class="bd-toc-link">
+										Help
+									</a>
+								</div>
+								<div class="bd-toc-item">
+									<a href="#u-notice" class="bd-toc-link">
+										Notice
+									</a>
+								</div>
+							</nav>
 						</div>
 					</nav>
 				</div>
@@ -83,12 +120,12 @@
 							Para instalarlo es muy sencillo solo necesita <a href="https://github.com/REP98/Html5Valid.git">Descargar</a> este plugin desde github y copiar la carpeta
 							dist a su proyecto, luego copie y pege las lineas a continuación.
 						</p>
-						<pre class="lang-html">
+						<pre><code class="language-html">
 							&lt;!-- Agrege esto al head --&gt;
 							&lt;link rel="stylesheet" type="text/css" href="../dist/css/html5valid.css"&gt;
 							&lt;!-- Agrege esto al final de Body --&gt;
 							&lt;script src="../dist/js/html5valid.js"&gt;&lt;/script&gt;
-						</pre>
+						</code></pre>
 						<p>Veamos un ejemplo</p>
 						<h3>Basico</h3>
 						<div class="example">
@@ -131,11 +168,413 @@
 										</div>
 										<input type="number" step="1" min="0" max="99" class="form-control" placeholder="numerico"/>
 									</div>
-									<button type="submint" class="btn btn-primary w-100"><i class=""></i> Validar</button>
+									<button type="submint" class="btn btn-primary w-100"><i class="fa fa-sign-out"></i> Validar</button>
 								</form>
 							</fieldset>
 						</div>
-						<pre data-content="#fm-1"></pre>
+						<pre data-content="#fm-1" data-lang='html'></pre>
+						<p>
+							Como podemos observar no existe codigo javascript, solo debemos agregar el atributo <code class="badge badge-info">data-role=html5valid</code>,
+							y listo. ahora solo falta decirle al plugins que elemento son obligatorios, para ello se puede hace de dos maneras: 1) usando el atributo
+							<code class="badge badge-info">data-required=true</code>, a cada input o podemos decirle que todos son obligatorios agregando al formulario
+							el atributo <code class="badge badge-info">data-all-required=true</code>
+						</p>
+					</div>
+					<div id="ajax">
+						<p>
+							Ademas de controlar los aspectos basico de un formulario tambien podems validar y enviar un formulario directamente
+							solo usando los atributos basico conocidos del jQuery.
+						</p>
+						<div class="example">
+							<div class="row">
+								<div class="col">
+									<form action="php/ajax.php" data-role="html5valid" id="fm-2" method="post" data-on-success="onsucess" data-xhr="true" data-on-error="onerror">
+										<div class="form-row">
+											<div class="col">
+												<input type="text" class="form-control" placeholder="Primer Nombre" minlength="6" maxlength="15" data-required="true" name="p-name">
+											</div>
+											<div class="col">
+												<input type="text" class="form-control" placeholder="Primer Apellido" maxlength="15" name="p-apellido">
+											</div>
+										</div>
+										<div class="form-row">
+											<div class="col">
+												<input type="tel" class="form-control" placeholder="Teléfono" data-type-valid="tel" name="telf">
+											</div>
+											<div class="col">
+												<input type="text" class="form-control" placeholder="correo electronico" data-type-valid="email" data-required="true" name="email">
+											</div>
+										</div>
+										<div class="form-row mt-1">
+											<div class="col">
+												<button type="submint" class="btn btn-primary w-100"><i class="fa fa-sign-out"></i> Validar</button>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="col">
+									<output id="results"></output>
+								</div>
+							</div>
+						</div>
+						<pre data-content="#fm-2" data-lang='html'></pre>
+						<p>
+							Es sencillo solo debemos parasele por el atributo <code class="badge badge-info">data-xhr</code>
+							los parametro que usamos con <code class="badge badge-danger">$.ajax</code>, o establecerlo a <strong>true</strong>
+							y automaticamente se tomara los valores del formulario como el <code>method</code>, <code>action</code> entre otros 
+							atributos.
+						</p>
+					</div>
+					<div id="opt">
+						<h3>Opciones</h3>
+						<p>
+							Acontinuacion mostraremos todo el conjunto de opciones disponibles para este plugis.
+						</p>
+						<h4>Opciones para el Formulario</h4>
+						<div class="table-respncive">
+							<table class="table table-striped table-borderless table-hover">
+								<caption>Opciones que solo se colocan dentro de los Dataset del elemento form</caption>
+								<thead>
+									<tr class="table-info">
+										<th>Data-*</th>
+										<th>Tipo</th>
+										<th>Valores por Defecto</th>
+										<th>Descripción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>novalidate</td>
+										<td>boolean</td>
+										<td>true</td>
+										<td>Si es true anula la validación del navegador</td>
+									</tr>
+									<tr>
+										<td>all-required</td>
+										<td>booelan</td>
+										<td>false</td>
+										<td>Establece si todos los ampos son obligatorios</td>
+									</tr>
+									<tr>
+										<td>cls</td>
+										<td>string</td>
+										<td></td>
+										<td>Class css para el formulario.</td>
+									</tr>
+									<tr>
+										<td>clsValid</td>
+										<td>string</td>
+										<td></td>
+										<td>Class css para el formulario si es valido.</td>
+									</tr>
+									<tr>
+										<td>clsInvalid</td>
+										<td>string</td>
+										<td></td>
+										<td>Class css para el formulario si es invalido.</td>
+									</tr>
+									<tr>
+										<td>online</td>
+										<td>boolean</td>
+										<td>false</td>										
+										<td>Permite establecer si los elementos seran validados en linea</td>
+									</tr>
+									<tr>
+										<td>event</td>
+										<td>string</td>
+										<td>submit</td>
+										<td>Permite establecer el evento que disparara el formulario</td>
+									</tr>
+									<tr>
+										<td>add-cls-required</td>
+										<td>boolean</td>
+										<td>true</td>
+										<td>Permite establecer si se debe usar una clase css para los elementos requeridos</td>
+									</tr>
+									<tr>
+										<td>show-type-error</td>
+										<td>string</td>
+										<td>help</td>
+										<td>Establece como debe ser mostrado los errores, solo tiene 2 valores posibles: help y notice</td>
+									</tr>
+									<tr>
+										<td>help</td>
+										<td>object</td>
+										<td>
+											<pre><code class="language-javascript">
+												{
+												    icons:'fa fa-times',
+												    cls:'help-invalid'
+												}
+												</code></pre>
+										</td>
+										<td>Si <code class="badge badge-info">data-show-type-error</code> es help esta opciones extilizan la apariensia de mensaje de ayuda</td>
+									</tr>
+									<tr>
+										<td>notice</td>
+										<td>object</td>
+										<td>
+											<pre><code class="language-javascript">
+												{
+												    cls:'dange',
+												    icons:'fa fa-times',
+												    duration:5000,
+												    onEscClickClose:true,
+												}
+												</code></pre>
+										</td>
+										<td>Si <code class="badge badge-info">data-show-type-error</code> es notice esta opciones extilizan la apariensia de las notificaciones</td>
+									</tr>
+									<tr>
+										<td>xhr</td>
+										<td>object or boolear</td>
+										<td>{}</td>
+										<td>Establece las opciones de Ajax</td>
+									</tr>
+									<tr>
+										<td>rule</td>
+										<td>object</td>
+										<td>
+											<pre><code class="language-javascript">
+												{
+												    valido:'Formulario Valido',
+												    invalido:'Formulario Invalido',
+												    xhrError:'Error al enviar formulario',
+												    text:"Por favor ingrese un texto valido",
+												    email:'Ingrese una direccion de Correo valido',
+												    url:'Ingrese una Url valida',
+												    tel:'Ingrese un n&uacute;mero de tel&eacute;fono validos',
+												    number:'Este campo solo acepta numeros',
+												    color:'Campo de para colores',
+												    date:'Ingrese una fecha valida',
+												    datetime:'Ingrese una fecha y hora validas',
+												    time:'Ingrese una hora valida',
+												    seach:'Ingrese un texto valido',
+												    password:'Ingrese una Contraseña valida',
+												    equalTo:'No concuerdan las contraseñas',
+												    different:'Son identicas',
+												    ip:'IP invalida',
+												    decimal:'No es un decimal Valido',
+												    required:'Elemento Requerido'
+												}
+												</code></pre>
+										</td>
+										<td>Establece los mensajes que se mostraran si los campos según su tipo son invalidos</td>
+									</tr>
+									<tr>
+										<td>on-success</td>
+										<td>function</td>
+										<td>
+											<pre><code class="language-javascript">
+												(data, textStatus, jqXHR)=>{}
+												</code></pre>
+										</td>
+										<td>Establece la funcion en caso de que la validacion a salido bien.</td>
+									</tr>
+									<tr>
+										<td>on-error</td>
+										<td>function</td>
+										<td>
+											<pre><code class="language-javascript">
+												(jqXHR, textStatus, error)=>{}
+												</code></pre>
+										</td>
+										<td>Establece la funcion en caso de error.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<h4>Opciones para los campos del formularios</h4>
+						<div class="table-respncive">
+							<table class="table table-striped table-borderless table-hover">
+								<caption>Opciones adicionales para los elementos del formulario</caption>
+								<thead>
+									<tr class="table-info">
+										<th>Data-*</th>
+										<th>Tipo</th>
+										<th>Valores por Defecto</th>
+										<th>Descripción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>type-valid</td>
+										<td>string</td>
+										<td>null</td>
+										<td>Estable cual es el tipo valido de entrada para un campo</td>
+									</tr>
+									<tr>
+										<td>online</td>
+										<td>boolean</td>
+										<td>false</td>
+										<td>Establece si se debe validar ese campo en linea</td>
+									</tr>
+									<tr>
+										<td>message</td>
+										<td>string</td>
+										<td>""</td>
+										<td>Establece el mensaje pesonalizado de cada elemento</td>
+									</tr>
+									<tr>
+										<td>required</td>
+										<td>boolean</td>
+										<td>false</td>
+										<td>Estabelce si el campo es obligatorio</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<h2><i class="mr-2 fa fa-sliders"></i> Utilidades</h2>
+					<hr class="mt-5 mb-2" style="border-color:rgba(0,0,0,.1)">
+					<div id="u-formvalue">
+						<h3>FormValue</h3>
+						<p>
+							Permite obtener y serializar los valores de un formulario de manera mas organizada para enviar via ajax.
+						</p>
+						<div class="example">
+							<div class="row">
+								<div class="col">
+									<form action="" data-role="html5valid" id="fm-3" method="post" data-on-success="serialize">
+										<div class="form-row">
+											<div class="col">
+												<input type="text" class="form-control" placeholder="Primer Nombre" minlength="6" maxlength="15" data-required="true" name="p-name" value="Mi Nombre">
+											</div>
+											<div class="col">
+												<input type="text" class="form-control" placeholder="Primer Apellido" maxlength="15" name="p-apellido" value="Mi Apellido">
+											</div>
+										</div>
+										<div class="form-row mt-1">
+											<div class="col">
+												<button type="submint" class="btn btn-primary w-100"><i class="fa fa-sign-out"></i> Serializar</button>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="col">
+									<pre><code class="language-js">
+										$('#id_de_mi_form').formval();
+									</code></pre>
+									<output id="resul-2"></output>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="u-help">
+						<h3>Help</h3>
+						<p>
+							Pequeño plugins que muestra un msj de ayuda al lado de un elemento dado.
+						</p>
+						<div class="example">
+							<div class="row">
+								<div class="col">
+									<button id="help-example" class="btn btn-primary">Mostrar ayuda</button>
+								</div>
+								<div class="col">
+									<pre><code class="language-js">
+										$("#id_de_mi_elemeto").help( { /*Opciones*/ } )
+									</code></pre>
+								</div>
+							</div>
+						</div>
+						<h4>Opciones</h4>
+						<div class="table-respncive">
+							<table class="table table-striped table-borderless table-hover">
+								<thead>
+									<tr class="table-info">
+										<th>Opción</th>
+										<th>Tipo</th>
+										<th>Valores por Defecto</th>
+										<th>Descripción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>text</td>
+										<td>string</td>
+										<td>''</td>
+										<td>Establece el texto a mostrar</td>
+									</tr>
+									<tr>
+										<td>cls</td>
+										<td>string</td>
+										<td>''</td>
+										<td>Establece clases css para el help</td>
+									</tr>
+									<tr>
+										<td>icons</td>
+										<td>string</td>
+										<td>""</td>
+										<td>Establece el elemento de iconos o la clase de icons a mostrar dentro del help</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="u-notice">
+						<h3>Notice</h3>
+						<p>
+							Pequeño plugins para mostrar notificaciones según la pantalla en que la veamos, si es desktop mostrar una ventanilla
+							flotante del lado derecho de la pantalla, si es movil mostrara un toasts.
+						</p>
+						<div class="example">
+							<div class="row">
+								<div class="col">
+									<button id="notice-example" class="btn btn-primary">Mostrar Notificación</button>
+								</div>
+								<div class="col">
+									<pre><code class="language-js">
+										$.notice( { /*Opciones*/ } )
+									</code></pre>
+								</div>
+							</div>
+						</div>
+						<h4>Opciones</h4>
+						<div class="table-respncive">
+							<table class="table table-striped table-borderless table-hover">
+								<thead>
+									<tr class="table-info">
+										<th>Opción</th>
+										<th>Tipo</th>
+										<th>Valores por Defecto</th>
+										<th>Descripción</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>text</td>
+										<td>string</td>
+										<td>''</td>
+										<td>Establece el texto a mostrar</td>
+									</tr>
+									<tr>
+										<td>cls</td>
+										<td>string</td>
+										<td>''</td>
+										<td>Establece clases css para la notificación, existen 4 clases predeterminadas que podemos usar que son: primary, secundary, success y danger.</td>
+									</tr>
+									<tr>
+										<td>icons</td>
+										<td>string</td>
+										<td>""</td>
+										<td>Establece el elemento de iconos o la clase de icons a mostrar dentro de la notificación</td>
+									</tr>
+									<tr>
+										<td>duration</td>
+										<td>number</td>
+										<td>5000</td>
+										<td>Establece que dura la notificación</td>
+									</tr>
+									<tr>
+										<td>onEscClickClose</td>
+										<td>boolean</td>
+										<td>true</td>
+										<td>Establece si al hace click sobre el botón escape del teclado se debe cerrar o no la notificación</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
 					</div>
 				</main>
 			</div>
@@ -143,6 +582,7 @@
 		<footer></footer>
 		<script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
 		<script src="js/demo.js"></script>
 		<script src="../dist/js/html5valid.js"></script>
 	</body>
